@@ -3,6 +3,27 @@ import secrets
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
+
+
+def load_optional_dotenv():
+	"""Load KEY=VALUE pairs from a local .env without overriding real environment variables."""
+	path = os.path.join(ROOT_DIR, ".env")
+	if not os.path.isfile(path):
+		return
+	with open(path, encoding="utf-8") as handle:
+		for raw_line in handle:
+			line = raw_line.strip()
+			if not line or line.startswith("#") or "=" not in line:
+				continue
+			key, value = line.split("=", 1)
+			key = key.strip()
+			value = value.strip().strip("'").strip('"')
+			if key and key not in os.environ:
+				os.environ[key] = value
+
+
+load_optional_dotenv()
 
 
 def _signing_key_from_env(name):

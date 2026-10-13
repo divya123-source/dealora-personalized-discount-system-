@@ -118,10 +118,10 @@ def _write_csv(path, header):
 	return handle, writer, header
 
 
-def _publish_outputs(temporary_dir, output_dir):
+def _publish_outputs(temporary_dir, output_dir, filenames=OUTPUT_FILES):
 	created = []
 	try:
-		for filename in OUTPUT_FILES:
+		for filename in filenames:
 			temporary_path = Path(temporary_dir) / filename
 			destination = output_dir / filename
 			os.link(str(temporary_path), str(destination))
@@ -132,17 +132,28 @@ def _publish_outputs(temporary_dir, output_dir):
 		raise
 
 
-def preprocess_retailrocket(raw_dir=DEFAULT_RAW_DIR, processed_dir=DEFAULT_PROCESSED_DIR):
+def preprocess_retailrocket(
+	raw_dir=DEFAULT_RAW_DIR,
+	processed_dir=DEFAULT_PROCESSED_DIR,
+	skip_item_properties=False,
+):
 	"""Create normalized CSVs and a validation report without loading a source file fully."""
 	raw_dir = Path(raw_dir)
 	processed_dir = Path(processed_dir)
-	input_names = EVENT_FILES + (CATEGORY_FILE,) + PROPERTY_FILES
+	input_names = EVENT_FILES + (CATEGORY_FILE,)
+	if not skip_item_properties:
+		input_names = input_names + PROPERTY_FILES
+	output_files = OUTPUT_FILES if not skip_item_properties else (
+		"interactions.csv",
+		"category_tree.csv",
+		"validation_report.json",
+	)
 	missing_inputs = [name for name in input_names if not (raw_dir / name).is_file()]
 	if missing_inputs:
 		raise FileNotFoundError("Missing input files: {}".format(", ".join(missing_inputs)))
 
 	processed_dir.mkdir(parents=True, exist_ok=True)
-	existing_outputs = [name for name in OUTPUT_FILES if (processed_dir / name).exists()]
+	existing_outputs = [name for name in output_files if (processed_dir / name).exists()]
 	if existing_outputs:
 		raise FileExistsError(
 			"Refusing to overwrite existing output(s): {}".format(", ".join(existing_outputs))
@@ -154,6 +165,7 @@ def preprocess_retailrocket(raw_dir=DEFAULT_RAW_DIR, processed_dir=DEFAULT_PROCE
 		"processed_at_utc": datetime.now(timezone.utc).isoformat(),
 		"id_namespace": "Retailrocket visitorid/itemid; not DealoRa database IDs",
 		"timestamp_format": "UTC ISO-8601 derived from source epoch milliseconds",
+		"skip_item_properties": skip_item_properties,
 		"event_mapping": EVENT_MAP,
 		"schema": {
 			"events.csv": {
@@ -209,9 +221,10 @@ def preprocess_retailrocket(raw_dir=DEFAULT_RAW_DIR, processed_dir=DEFAULT_PROCE
 			category_handle, category_writer, _ = _write_csv(
 				temporary_dir / "category_tree.csv", ("category_id", "parent_id")
 			)
-			properties_handle, properties_writer, _ = _write_csv(
-				temporary_dir / "item_properties.csv", ("timestamp_ms", "item_id", "property", "value")
-			)
+			if not skip_item_properties:
+				properties_handle, properties_writer, _ = _write_csv(
+					temporary_dir / "item_properties.csv", ("timestamp_ms", "item_id", "property", "value")
+				)
 			for filename in EVENT_FILES:
 				path = raw_dir / filename
 				stats = _new_file_stats(EVENT_COLUMNS)
@@ -306,57 +319,59 @@ def preprocess_retailrocket(raw_dir=DEFAULT_RAW_DIR, processed_dir=DEFAULT_PROCE
 			report["files"][CATEGORY_FILE] = stats
 			error_counts.update(errors)
 
-			for filename in PROPERTY_FILES:
-				path = raw_dir / filename
-				stats = _new_file_stats(PROPERTY_COLUMNS)
-				errors = Counter()
-				handle, reader, header = _file_reader(path, PROPERTY_COLUMNS)
-				try:
-					positions = {name: header.index(name) for name in PROPERTY_COLUMNS}
-					for values in reader:
-						stats["source_rows"] += 1
-						if len(values) != len(header):
-							_record_missing(stats, PROPERTY_COLUMNS, dict(zip(header, values)))
-							_reject(stats, errors, "malformed_column_count")
-							continue
-						row = {name: values[index] for name, index in positions.items()}
-						_record_missing(stats, PROPERTY_COLUMNS, row)
-						property_name = (row["property"] or "").strip()
-						if not property_name:
-							_reject(stats, errors, "missing_property_name")
-							continue
-						try:
-							timestamp_ms, _timestamp_utc = _timestamp(row["timestamp"])
-							item_id = _integer(row["itemid"])
-						except ValueError as error:
-							reason = str(error)
-							if reason not in {"negative_integer", "invalid_timestamp"}:
-								reason = "invalid_numeric_field"
-							_reject(stats, errors, reason)
-							continue
-						value = row["value"] or ""
-						key = [timestamp_ms, item_id, property_name, value]
-						inserted = database.execute(
-							"INSERT OR IGNORE INTO seen_properties(digest) VALUES (?)", (_digest(key),)
-						).rowcount
-						if not inserted:
-							stats["duplicate_rows"] += 1
-							continue
-						properties_writer.writerow((timestamp_ms, item_id, property_name, value))
-						database.execute("INSERT OR IGNORE INTO property_items(item_id) VALUES (?)", (item_id,))
-						stats["output_rows"] += 1
-						if stats["source_rows"] % 100000 == 0:
-							database.commit()
-				finally:
-					handle.close()
-				database.commit()
-				stats["errors"] = dict(sorted(errors.items()))
-				report["files"][filename] = stats
-				error_counts.update(errors)
+			if not skip_item_properties:
+				for filename in PROPERTY_FILES:
+					path = raw_dir / filename
+					stats = _new_file_stats(PROPERTY_COLUMNS)
+					errors = Counter()
+					handle, reader, header = _file_reader(path, PROPERTY_COLUMNS)
+					try:
+						positions = {name: header.index(name) for name in PROPERTY_COLUMNS}
+						for values in reader:
+							stats["source_rows"] += 1
+							if len(values) != len(header):
+								_record_missing(stats, PROPERTY_COLUMNS, dict(zip(header, values)))
+								_reject(stats, errors, "malformed_column_count")
+								continue
+							row = {name: values[index] for name, index in positions.items()}
+							_record_missing(stats, PROPERTY_COLUMNS, row)
+							property_name = (row["property"] or "").strip()
+							if not property_name:
+								_reject(stats, errors, "missing_property_name")
+								continue
+							try:
+								timestamp_ms, _timestamp_utc = _timestamp(row["timestamp"])
+								item_id = _integer(row["itemid"])
+							except ValueError as error:
+								reason = str(error)
+								if reason not in {"negative_integer", "invalid_timestamp"}:
+									reason = "invalid_numeric_field"
+								_reject(stats, errors, reason)
+								continue
+							value = row["value"] or ""
+							key = [timestamp_ms, item_id, property_name, value]
+							inserted = database.execute(
+								"INSERT OR IGNORE INTO seen_properties(digest) VALUES (?)", (_digest(key),)
+							).rowcount
+							if not inserted:
+								stats["duplicate_rows"] += 1
+								continue
+							properties_writer.writerow((timestamp_ms, item_id, property_name, value))
+							database.execute("INSERT OR IGNORE INTO property_items(item_id) VALUES (?)", (item_id,))
+							stats["output_rows"] += 1
+							if stats["source_rows"] % 100000 == 0:
+								database.commit()
+					finally:
+						handle.close()
+					database.commit()
+					stats["errors"] = dict(sorted(errors.items()))
+					report["files"][filename] = stats
+					error_counts.update(errors)
 
 			interactions_handle.close()
 			category_handle.close()
-			properties_handle.close()
+			if properties_handle is not None:
+				properties_handle.close()
 			report["event_types"] = dict(sorted(event_type_counts.items()))
 			report["mapped_event_types"] = dict(sorted(mapped_event_counts.items()))
 			report["unique_visitors"] = database.execute("SELECT COUNT(*) FROM visitors").fetchone()[0]
@@ -372,7 +387,7 @@ def preprocess_retailrocket(raw_dir=DEFAULT_RAW_DIR, processed_dir=DEFAULT_PROCE
 			with report_path.open("w", encoding="utf-8") as handle:
 				json.dump(report, handle, indent=2, sort_keys=True)
 				handle.write("\n")
-			_publish_outputs(temporary_dir, processed_dir)
+			_publish_outputs(temporary_dir, processed_dir, output_files)
 		finally:
 			for handle in (interactions_handle, category_handle, properties_handle):
 				if handle is not None:
@@ -385,9 +400,18 @@ def main():
 	parser = argparse.ArgumentParser(description=__doc__)
 	parser.add_argument("--raw-dir", type=Path, default=DEFAULT_RAW_DIR)
 	parser.add_argument("--processed-dir", type=Path, default=DEFAULT_PROCESSED_DIR)
+	parser.add_argument(
+		"--skip-item-properties",
+		action="store_true",
+		help="Process events and categories only. Safer on laptops; properties remain in data/raw.",
+	)
 	arguments = parser.parse_args()
 	try:
-		report = preprocess_retailrocket(arguments.raw_dir, arguments.processed_dir)
+		report = preprocess_retailrocket(
+			arguments.raw_dir,
+			arguments.processed_dir,
+			skip_item_properties=arguments.skip_item_properties,
+		)
 	except (OSError, ValueError, sqlite3.Error, csv.Error) as error:
 		print("Retailrocket preprocessing failed: {}".format(error), file=sys.stderr)
 		return 1

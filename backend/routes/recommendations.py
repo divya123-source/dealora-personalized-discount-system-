@@ -12,14 +12,8 @@ from models import Order, OrderItem, Product, User, UserActivity, db
 recommendations_bp = Blueprint("recommendations", __name__, url_prefix="/api/recommendations")
 
 
-@recommendations_bp.get("")
-@jwt_required()
-def get_recommendations():
-	user_id = int(get_jwt_identity())
-	user = db.session.get(User, user_id)
-	if user is None:
-		return jsonify({"error": "User account no longer exists."}), 404
-
+def build_recommendation_payload(user, limit=8):
+	user_id = user.id
 	activities = UserActivity.query.filter_by(user_id=user_id).order_by(UserActivity.created_at.asc()).all()
 	orders = Order.query.filter_by(user_id=user_id).order_by(Order.created_at.asc()).all()
 	purchased_product_ids = {
@@ -39,7 +33,6 @@ def get_recommendations():
 	user_segment = segments.get(user_id, {"segment": "general"})
 	sensitivity = calculate_price_sensitivity(orders, activities)
 
-	limit = request.args.get("limit", default=8, type=int)
 	limit = min(max(limit or 8, 1), 30)
 	ranked_products = recommend_products(
 		user,
@@ -48,10 +41,14 @@ def get_recommendations():
 		purchased_product_ids=purchased_product_ids,
 		popularity=popularity,
 		limit=limit,
+		with_explanations=True,
 	)
 	recommendations = []
-	for product in ranked_products:
+	for score, product, reason in ranked_products:
 		product_data = product.to_dict()
+		product_data["recommendation_score"] = round(float(score), 4)
+		product_data["recommendation_reason"] = reason
+		product_data["source"] = "dealora_live_catalog"
 		product_data["suggested_discount"] = recommend_discount(
 			user_segment.get("segment"),
 			sensitivity,
@@ -64,4 +61,17 @@ def get_recommendations():
 		"recommendations": recommendations,
 		"customer_segment": user_segment,
 		"price_sensitivity": sensitivity,
-	})
+		"source": "dealora_live_catalog",
+		"offline_retailrocket_ids_used": False,
+	}
+
+
+@recommendations_bp.get("")
+@jwt_required()
+def get_recommendations():
+	user_id = int(get_jwt_identity())
+	user = db.session.get(User, user_id)
+	if user is None:
+		return jsonify({"error": "User account no longer exists."}), 404
+	limit = request.args.get("limit", default=8, type=int)
+	return jsonify(build_recommendation_payload(user, limit))

@@ -22,8 +22,28 @@ def _preference_text(preferences):
 	return str(preferences or "")
 
 
+def explain_recommendation(product, similarity, category_score, interaction_score, popular_score, user):
+	"""Return a short, human-readable reason using only DealoRa catalog fields."""
+	parts = []
+	category_name = product.category.name if product.category else ""
+	if category_score >= 0.25 and category_name:
+		parts.append("You have been spending time in {}.".format(category_name))
+	preferences = _preference_text(getattr(user, "preferences", []))
+	if similarity >= 0.12 and preferences:
+		parts.append("It is close to your saved interests.")
+	elif similarity >= 0.12:
+		parts.append("It is similar to items you already engaged with.")
+	if interaction_score >= 0.25:
+		parts.append("You already viewed or saved this product.")
+	if popular_score >= 0.45:
+		parts.append("It is popular with other Dealora shoppers.")
+	if not parts:
+		parts.append("Suggested from your profile, browsing, and available stock.")
+	return " ".join(parts)
+
+
 def recommend_products(user, products, activities=None, purchased_product_ids=None,
-					   popularity=None, limit=8):
+					   popularity=None, limit=8, with_explanations=False):
 	"""Rank available products from user interests, interactions, and overall popularity."""
 	products = [product for product in products if product.stock > 0]
 	if not products or limit <= 0:
@@ -75,10 +95,16 @@ def recommend_products(user, products, activities=None, purchased_product_ids=No
 		category_name = product.category.name.lower() if product.category else ""
 		category_score = category_scores.get(category_name, 0.0)
 		category_score = category_score / max(category_scores.values()) if category_scores else 0.0
-		personal_score = max(similarity_scores[index], category_score * 0.8,
-							 min(product_scores.get(product.id, 0.0) / 4.0, 1.0))
+		interaction_score = min(product_scores.get(product.id, 0.0) / 4.0, 1.0)
+		personal_score = max(similarity_scores[index], category_score * 0.8, interaction_score)
 		popular_score = float(popularity.get(product.id, 0)) / max_popularity
-		ranked.append((personal_score * 0.75 + popular_score * 0.25, product))
+		reason = explain_recommendation(
+			product, similarity_scores[index], category_score, interaction_score, popular_score, user,
+		)
+		ranked.append((personal_score * 0.75 + popular_score * 0.25, product, reason))
 
 	ranked.sort(key=lambda pair: (-pair[0], pair[1].id))
-	return [product for _score, product in ranked[:limit]]
+	selected = ranked[:limit]
+	if with_explanations:
+		return selected
+	return [product for _score, product, _reason in selected]

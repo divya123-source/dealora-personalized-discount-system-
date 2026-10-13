@@ -45,10 +45,10 @@ def ranking_metrics(recommended, relevant, k):
 	return {"precision": precision, "recall": recall, "ndcg": ndcg}
 
 
-def _publish_outputs(temporary_dir, output_dir):
+def _publish_outputs(temporary_dir, output_dir, filenames=None):
 	created = []
 	try:
-		for filename in (MODEL_FILE, RESULTS_FILE):
+		for filename in filenames or (MODEL_FILE, RESULTS_FILE):
 			source = Path(temporary_dir) / filename
 			destination = output_dir / filename
 			os.link(str(source), str(destination))
