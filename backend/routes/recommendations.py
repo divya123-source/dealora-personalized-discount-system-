@@ -63,7 +63,7 @@ def build_recommendation_payload(user, limit=8):
 		"price_sensitivity": sensitivity,
 		"source": "dealora_live_catalog",
 		"offline_retailrocket_ids_used": False,
-	}
+	})
 
 
 @recommendations_bp.get("")
