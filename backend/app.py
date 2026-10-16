@@ -24,6 +24,7 @@ def create_app(config_class=Config):
 	from routes.admin import admin_bp
 	from routes.auth import auth_bp
 	from routes.discounts import discounts_bp
+	from routes.model_evaluation import model_evaluation_bp
 	from routes.notifications import notifications_bp
 	from routes.orders import orders_bp
 	from routes.products import products_bp
@@ -35,6 +36,7 @@ def create_app(config_class=Config):
 		discounts_bp,
 		orders_bp,
 		recommendations_bp,
+		model_evaluation_bp,
 		admin_bp,
 		notifications_bp,
 	):
