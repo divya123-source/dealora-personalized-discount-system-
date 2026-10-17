@@ -1,0 +1,21 @@
+{
+  "built_at_utc": "2026-10-15T12:51:13.636632+00:00",
+  "features": [
+    "visitor_id",
+    "item_id",
+    "event_type (view/cart/purchase)",
+    "timestamp_ms",
+    "directed co-visitation within a recent-item window",
+    "train-period weighted item popularity"
+  ],
+  "hyperparameters": {
+    "model": "covisitation",
+    "name": "covisitation_w10_n100",
+    "neighbors": 100,
+    "recent_window": 10
+  },
+  "id_namespace": "Retailrocket visitorid/itemid; not DealoRa database IDs",
+  "model_name": "covisitation_w10_n100",
+  "model_version": "2.0",
+  "not_used_in_live_store": true
+}

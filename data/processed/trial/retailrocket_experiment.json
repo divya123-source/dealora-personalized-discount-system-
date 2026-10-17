@@ -1,0 +1,499 @@
+{
+  "candidates": [
+    {
+      "candidate": {
+        "model": "popularity",
+        "name": "popularity_baseline",
+        "neighbors": 0,
+        "recent_window": 0
+      },
+      "cv_summary": {
+        "map_at_10": {
+          "mean": 0.003762557048566905,
+          "n": 2,
+          "std": 0.00327537259880973
+        },
+        "ndcg_at_10": {
+          "mean": 0.007076852409856588,
+          "n": 2,
+          "std": 0.004463502209262723
+        },
+        "precision_at_10": {
+          "mean": 0.002260617127873765,
+          "n": 2,
+          "std": 0.0006939625478143002
+        },
+        "precision_at_5": {
+          "mean": 0.002549983611930514,
+          "n": 2,
+          "std": 0.0034274333468385723
+        },
+        "recall_at_10": {
+          "mean": 0.01570693148526829,
+          "n": 2,
+          "std": 0.006858052316689071
+        }
+      },
+      "folds": [
+        {
+          "evaluation_users": 1582,
+          "fold": 1,
+          "hit_rate_at_10": 0.017699115044247787,
+          "hit_rate_at_5": 0.0006321112515802782,
+          "map_at_10": 0.0014465188730359397,
+          "map_at_5": 0.00012642225031605562,
+          "ndcg_at_10": 0.00392067972984578,
+          "ndcg_at_5": 0.0002445340121583702,
+          "precision_at_10": 0.0017699115044247794,
+          "precision_at_5": 0.00012642225031605562,
+          "recall_at_10": 0.010857556186405338,
+          "recall_at_5": 0.0006321112515802782,
+          "sampled_candidate_classification": {
+            "accuracy": 0.07276616944582832,
+            "decision_threshold": 0.0,
+            "f1": 0.13566082063049772,
+            "false_negative": 0,
+            "false_positive": 31640,
+            "precision": 0.07276616944582832,
+            "recall": 1.0,
+            "roc_auc": 0.5,
+            "seed": 1,
+            "setting": "Sampled-candidate binary labels (relevant test purchases vs. non-purchased candidates). Not catalog-wide accuracy.",
+            "support": 34123,
+            "true_negative": 0,
+            "true_positive": 2483
+          },
+          "train_end_timestamp_ms": 1436452791604,
+          "val_end_timestamp_ms": 1437965675292
+        },
+        {
+          "evaluation_users": 1890,
+          "fold": 2,
+          "hit_rate_at_10": 0.027513227513227514,
+          "hit_rate_at_5": 0.02486772486772487,
+          "map_at_10": 0.0060785952240978705,
+          "map_at_5": 0.00585655496766608,
+          "ndcg_at_10": 0.010233025089867395,
+          "ndcg_at_5": 0.009611838286011625,
+          "precision_at_10": 0.00275132275132275,
+          "precision_at_5": 0.004973544973544973,
+          "recall_at_10": 0.020556306784131246,
+          "recall_at_5": 0.01826353782469562,
+          "sampled_candidate_classification": {
+            "accuracy": 0.07015644986716521,
+            "decision_threshold": 0.0,
+            "f1": 0.13111438028687017,
+            "false_negative": 0,
+            "false_positive": 37800,
+            "precision": 0.07015644986716521,
+            "recall": 1.0,
+            "roc_auc": 0.5,
+            "seed": 2,
+            "setting": "Sampled-candidate binary labels (relevant test purchases vs. non-purchased candidates). Not catalog-wide accuracy.",
+            "support": 40652,
+            "true_negative": 0,
+            "true_positive": 2852
+          },
+          "train_end_timestamp_ms": 1437965675292,
+          "val_end_timestamp_ms": 1439871800445
+        }
+      ]
+    },
+    {
+      "candidate": {
+        "model": "covisitation",
+        "name": "covisitation_w3_n50",
+        "neighbors": 50,
+        "recent_window": 3
+      },
+      "cv_summary": {
+        "map_at_10": {
+          "mean": 0.010425701039001124,
+          "n": 2,
+          "std": 0.0028916545257421226
+        },
+        "ndcg_at_10": {
+          "mean": 0.015864323343836677,
+          "n": 2,
+          "std": 0.005166153065991683
+        },
+        "precision_at_10": {
+          "mean": 0.004067050615723178,
+          "n": 2,
+          "std": 0.0012819766150462617
+        },
+        "precision_at_5": {
+          "mean": 0.005326590813316473,
+          "n": 2,
+          "std": 0.0032420235058194776
+        },
+        "recall_at_10": {
+          "mean": 0.03011857323525096,
+          "n": 2,
+          "std": 0.010748269547063698
+        }
+      },
+      "folds": [
+        {
+          "evaluation_users": 1582,
+          "fold": 1,
+          "hit_rate_at_10": 0.028445006321112517,
+          "hit_rate_at_5": 0.01390644753476612,
+          "map_at_10": 0.0083809925150001,
+          "map_at_5": 0.006763590391908977,
+          "ndcg_at_10": 0.012211301478226284,
+          "ndcg_at_5": 0.008259399726282757,
+          "precision_at_10": 0.00316055625790139,
+          "precision_at_5": 0.0030341340075853364,
+          "recall_at_10": 0.022518398952501358,
+          "recall_at_5": 0.011002686472819215,
+          "sampled_candidate_classification": {
+            "accuracy": 0.07276616944582832,
+            "decision_threshold": 0.0,
+            "f1": 0.13566082063049772,
+            "false_negative": 0,
+            "false_positive": 31640,
+            "precision": 0.07276616944582832,
+            "recall": 1.0,
+            "roc_auc": 0.5104203527094228,
+            "seed": 1,
+            "setting": "Sampled-candidate binary labels (relevant test purchases vs. non-purchased candidates). Not catalog-wide accuracy.",
+            "support": 34123,
+            "true_negative": 0,
+            "true_positive": 2483
+          },
+          "train_end_timestamp_ms": 1436452791604,
+          "val_end_timestamp_ms": 1437965675292
+        },
+        {
+          "evaluation_users": 1890,
+          "fold": 2,
+          "hit_rate_at_10": 0.04708994708994709,
+          "hit_rate_at_5": 0.03650793650793651,
+          "map_at_10": 0.01247040956300215,
+          "map_at_5": 0.011278218694885354,
+          "ndcg_at_10": 0.01951734520944707,
+          "ndcg_at_5": 0.016532399229288664,
+          "precision_at_10": 0.004973544973544966,
+          "precision_at_5": 0.00761904761904761,
+          "recall_at_10": 0.03771874751800056,
+          "recall_at_5": 0.0285300349959547,
+          "sampled_candidate_classification": {
+            "accuracy": 0.07015644986716521,
+            "decision_threshold": 0.0,
+            "f1": 0.13111438028687017,
+            "false_negative": 0,
+            "false_positive": 37800,
+            "precision": 0.07015644986716521,
+            "recall": 1.0,
+            "roc_auc": 0.512400649873476,
+            "seed": 2,
+            "setting": "Sampled-candidate binary labels (relevant test purchases vs. non-purchased candidates). Not catalog-wide accuracy.",
+            "support": 40652,
+            "true_negative": 0,
+            "true_positive": 2852
+          },
+          "train_end_timestamp_ms": 1437965675292,
+          "val_end_timestamp_ms": 1439871800445
+        }
+      ]
+    },
+    {
+      "candidate": {
+        "model": "covisitation",
+        "name": "covisitation_w5_n100",
+        "neighbors": 100,
+        "recent_window": 5
+      },
+      "cv_summary": {
+        "map_at_10": {
+          "mean": 0.01108985619995476,
+          "n": 2,
+          "std": 0.0027225322052550163
+        },
+        "ndcg_at_10": {
+          "mean": 0.016686508684818087,
+          "n": 2,
+          "std": 0.004746829127440774
+        },
+        "precision_at_10": {
+          "mean": 0.004246382918949286,
+          "n": 2,
+          "std": 0.0011780146684748452
+        },
+        "precision_at_5": {
+          "mean": 0.005854286650746825,
+          "n": 2,
+          "std": 0.003094357811007846
+        },
+        "recall_at_10": {
+          "mean": 0.031079909097029297,
+          "n": 2,
+          "std": 0.009388735333341145
+        }
+      },
+      "folds": [
+        {
+          "evaluation_users": 1582,
+          "fold": 1,
+          "hit_rate_at_10": 0.030973451327433628,
+          "hit_rate_at_5": 0.01643489254108723,
+          "map_at_10": 0.009164735215620171,
+          "map_at_5": 0.007645034414945919,
+          "ndcg_at_10": 0.013329993619670893,
+          "ndcg_at_5": 0.009433000394043876,
+          "precision_at_10": 0.0034134007585335004,
+          "precision_at_5": 0.0036662452591656155,
+          "recall_at_10": 0.024441070676058035,
+          "recall_at_5": 0.012899020227560048,
+          "sampled_candidate_classification": {
+            "accuracy": 0.07276616944582832,
+            "decision_threshold": 0.0,
+            "f1": 0.13566082063049772,
+            "false_negative": 0,
+            "false_positive": 31640,
+            "precision": 0.07276616944582832,
+            "recall": 1.0,
+            "roc_auc": 0.5125406493612953,
+            "seed": 1,
+            "setting": "Sampled-candidate binary labels (relevant test purchases vs. non-purchased candidates). Not catalog-wide accuracy.",
+            "support": 34123,
+            "true_negative": 0,
+            "true_positive": 2483
+          },
+          "train_end_timestamp_ms": 1436452791604,
+          "val_end_timestamp_ms": 1437965675292
+        },
+        {
+          "evaluation_users": 1890,
+          "fold": 2,
+          "hit_rate_at_10": 0.04708994708994709,
+          "hit_rate_at_5": 0.0380952380952381,
+          "map_at_10": 0.013014977184289346,
+          "map_at_5": 0.01192122281011169,
+          "ndcg_at_10": 0.02004302374996528,
+          "ndcg_at_5": 0.01739421201482328,
+          "precision_at_10": 0.0050793650793650716,
+          "precision_at_5": 0.008042328042328033,
+          "recall_at_10": 0.03771874751800056,
+          "recall_at_5": 0.029694056159975866,
+          "sampled_candidate_classification": {
+            "accuracy": 0.07015644986716521,
+            "decision_threshold": 0.0,
+            "f1": 0.13111438028687017,
+            "false_negative": 0,
+            "false_positive": 37800,
+            "precision": 0.07015644986716521,
+            "recall": 1.0,
+            "roc_auc": 0.5151044008845551,
+            "seed": 2,
+            "setting": "Sampled-candidate binary labels (relevant test purchases vs. non-purchased candidates). Not catalog-wide accuracy.",
+            "support": 40652,
+            "true_negative": 0,
+            "true_positive": 2852
+          },
+          "train_end_timestamp_ms": 1437965675292,
+          "val_end_timestamp_ms": 1439871800445
+        }
+      ]
+    },
+    {
+      "candidate": {
+        "model": "covisitation",
+        "name": "covisitation_w10_n100",
+        "neighbors": 100,
+        "recent_window": 10
+      },
+      "cv_summary": {
+        "map_at_10": {
+          "mean": 0.011410175975412194,
+          "n": 2,
+          "std": 0.0023309365569681253
+        },
+        "ndcg_at_10": {
+          "mean": 0.017262669789993912,
+          "n": 2,
+          "std": 0.00433734602142314
+        },
+        "precision_at_10": {
+          "mean": 0.0044837758112094344,
+          "n": 2,
+          "std": 0.0010667687638633927
+        },
+        "precision_at_5": {
+          "mean": 0.006149740132041013,
+          "n": 2,
+          "std": 0.0029758279483563573
+        },
+        "recall_at_10": {
+          "mean": 0.03242045318093621,
+          "n": 2,
+          "std": 0.009139094225969008
+        }
+      },
+      "folds": [
+        {
+          "evaluation_users": 1582,
+          "fold": 1,
+          "hit_rate_at_10": 0.03350189633375474,
+          "hit_rate_at_5": 0.017699115044247787,
+          "map_at_10": 0.00976195492946441,
+          "map_at_5": 0.008343868520859672,
+          "ndcg_at_10": 0.014195703005893118,
+          "ndcg_at_5": 0.010374740390369695,
+          "precision_at_10": 0.0037294563843236384,
+          "precision_at_5": 0.004045512010113782,
+          "recall_at_10": 0.025958137679850706,
+          "recall_at_5": 0.014742678044669196,
+          "sampled_candidate_classification": {
+            "accuracy": 0.07276616944582832,
+            "decision_threshold": 0.0,
+            "f1": 0.13566082063049772,
+            "false_negative": 0,
+            "false_positive": 31640,
+            "precision": 0.07276616944582832,
+            "recall": 1.0,
+            "roc_auc": 0.5144788035251594,
+            "seed": 1,
+            "setting": "Sampled-candidate binary labels (relevant test purchases vs. non-purchased candidates). Not catalog-wide accuracy.",
+            "support": 34123,
+            "true_negative": 0,
+            "true_positive": 2483
+          },
+          "train_end_timestamp_ms": 1436452791604,
+          "val_end_timestamp_ms": 1437965675292
+        },
+        {
+          "evaluation_users": 1890,
+          "fold": 2,
+          "hit_rate_at_10": 0.04814814814814815,
+          "hit_rate_at_5": 0.0380952380952381,
+          "map_at_10": 0.013058397021359979,
+          "map_at_5": 0.01187184009406231,
+          "ndcg_at_10": 0.020329636574094707,
+          "ndcg_at_5": 0.017368832742662894,
+          "precision_at_10": 0.00523809523809523,
+          "precision_at_5": 0.008253968253968244,
+          "recall_at_10": 0.03888276868202172,
+          "recall_at_5": 0.029694056159975866,
+          "sampled_candidate_classification": {
+            "accuracy": 0.07015644986716521,
+            "decision_threshold": 0.0,
+            "f1": 0.13111438028687017,
+            "false_negative": 0,
+            "false_positive": 37800,
+            "precision": 0.07015644986716521,
+            "recall": 1.0,
+            "roc_auc": 0.5180981414694599,
+            "seed": 2,
+            "setting": "Sampled-candidate binary labels (relevant test purchases vs. non-purchased candidates). Not catalog-wide accuracy.",
+            "support": 40652,
+            "true_negative": 0,
+            "true_positive": 2852
+          },
+          "train_end_timestamp_ms": 1437965675292,
+          "val_end_timestamp_ms": 1439871800445
+        }
+      ]
+    }
+  ],
+  "dataset": {
+    "interactions_csv": "data\\processed\\interactions.csv",
+    "rejected_rows": 0,
+    "valid_rows": 2755641
+  },
+  "final_test": {
+    "popularity_baseline": {
+      "evaluation_users": 1990,
+      "hit_rate_at_10": 0.0185929648241206,
+      "hit_rate_at_5": 0.01457286432160804,
+      "map_at_10": 0.009423297040759353,
+      "map_at_5": 0.009296482412060299,
+      "ndcg_at_10": 0.011089615412016187,
+      "ndcg_at_5": 0.01036279494438466,
+      "precision_at_10": 0.0018592964824120613,
+      "precision_at_5": 0.0029145728643216093,
+      "recall_at_10": 0.012064367093540418,
+      "recall_at_5": 0.008903563073439917,
+      "sampled_candidate_classification": {
+        "accuracy": 0.0705712017187427,
+        "decision_threshold": 0.0,
+        "f1": 0.1318384085158363,
+        "false_negative": 0,
+        "false_positive": 39800,
+        "precision": 0.0705712017187427,
+        "recall": 1.0,
+        "roc_auc": 0.5,
+        "seed": 99,
+        "setting": "Sampled-candidate binary labels (relevant test purchases vs. non-purchased candidates). Not catalog-wide accuracy.",
+        "support": 42822,
+        "true_negative": 0,
+        "true_positive": 3022
+      }
+    },
+    "selected_model": {
+      "evaluation_users": 1990,
+      "hit_rate_at_10": 0.024623115577889446,
+      "hit_rate_at_5": 0.019597989949748745,
+      "map_at_10": 0.01244132368190157,
+      "map_at_5": 0.011876046901172525,
+      "ndcg_at_10": 0.015063414750701791,
+      "ndcg_at_5": 0.013613203822497788,
+      "precision_at_10": 0.0029145728643216067,
+      "precision_at_5": 0.004422110552763819,
+      "recall_at_10": 0.019056791895987874,
+      "recall_at_5": 0.014444444444444444,
+      "sampled_candidate_classification": {
+        "accuracy": 0.0705712017187427,
+        "decision_threshold": 0.0,
+        "f1": 0.1318384085158363,
+        "false_negative": 0,
+        "false_positive": 39800,
+        "precision": 0.0705712017187427,
+        "recall": 1.0,
+        "roc_auc": 0.5096637098463861,
+        "seed": 99,
+        "setting": "Sampled-candidate binary labels (relevant test purchases vs. non-purchased candidates). Not catalog-wide accuracy.",
+        "support": 42822,
+        "true_negative": 0,
+        "true_positive": 3022
+      }
+    }
+  },
+  "generated_at_utc": "2026-10-15T12:51:13.636632+00:00",
+  "id_namespace": "Retailrocket visitorid/itemid; not DealoRa database IDs",
+  "protocol": {
+    "cross_validation": "two walk-forward folds on the training period only (50-65% and 65-80%)",
+    "k_values": [
+      5,
+      10
+    ],
+    "max_eval_users_per_split": 2000,
+    "selection_metric": "mean NDCG@10 across CV folds",
+    "split": "global chronological 80/20 holdout; test timestamps never used in training, CV, or tuning",
+    "target_note": "An 85-90% Precision@K on a large implicit-feedback catalog is not a realistic Retailrocket ranking target. Reported ranking metrics are measured. Classification metrics use sampled candidates and are not catalog-wide accuracy."
+  },
+  "selected_model": {
+    "model": "covisitation",
+    "name": "covisitation_w10_n100",
+    "neighbors": 100,
+    "recent_window": 10
+  },
+  "selection_reason": "Selected covisitation_w10_n100 because it had the highest mean NDCG@10 across time-ordered validation folds (0.017262669789993912).",
+  "target_85_90": {
+    "legitimate_improvements": [
+      "Session-based sequential models (GRU4Rec, SASRec) on GPU.",
+      "Content features from decoded item properties, if a verified mapping exists.",
+      "Larger evaluation user samples once more RAM/time is available."
+    ],
+    "limitations": [
+      "Retailrocket purchases are sparse relative to the item catalog, so Precision@K is typically low.",
+      "HitRate@K and NDCG@K are the more informative ranking measures for this task.",
+      "Classification accuracy can look high from class imbalance; ROC-AUC on sampled candidates is preferred."
+    ],
+    "primary_reported_metric": "ndcg_at_10",
+    "requested": "85-90% recommendation performance",
+    "selected_model_ndcg_at_10": 0.015063414750701791,
+    "target_met": false
+  }
+}
